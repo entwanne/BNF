@@ -20,9 +20,9 @@ int main(int ac, char** argv)
     {
       visitor = bnf_new_visitor();
       /* node = bnf_or_seq(bnf_new_call("NUMBER"), bnf_new_label("tata"), bnf_and_seq(bnf_new_label("tu"), bnf_or_seq(bnf_new_label("tu"), bnf_new_label("ut"), bnf_new_label(""), 0), 0), 0); */
-      node_num = bnf_new_label("42");
+      node_num = bnf_or_seq(bnf_new_label("42"), bnf_or_seq(bnf_new_label("15"), bnf_new_label(""), 0), 0);
       bnf_visitor_register_rule(visitor, "NUMBER", node_num);
-      node = bnf_and_seq(bnf_new_call("NUMBER"), bnf_new_label("tutu"), 0);
+      node = bnf_and_seq(bnf_new_call("NUMBER"), bnf_or_seq(bnf_new_label("tutu"), bnf_new_label("tata"), 0), 0);
       bnf_visitor_register_rule(visitor, "S", node);
 
       bnf_print_node(node);

@@ -24,7 +24,7 @@ static int bnf_label_visit(bnf_state_t* state, bnf_visitor_t* visitor)
 	{
 	  rule_exit = (bnf_rule_exit_t*) list_pop(&state->mem);
 	  next = bnf_find_next_node(rule_exit->caller, 0);
-	  free(rule_exit);
+	  /* free(rule_exit); */ /* DOUBLE FREE */
 	}
       if (!next && !*state->text)
 	return 1;
