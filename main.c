@@ -18,7 +18,9 @@ int main(int ac, char** argv)
   if (ac > 1)
     {
       visitor = bnf_new_visitor();
-      node = bnf_or_seq(bnf_new_call("NUMBER"), bnf_new_label("tata"), bnf_and_seq(bnf_new_label("tu"), bnf_or_seq(bnf_new_label("tu"), bnf_new_label("ut"), bnf_new_label(""), 0), 0), 0);
+      /* node = bnf_or_seq(bnf_new_call("NUMBER"), bnf_new_label("tata"), bnf_and_seq(bnf_new_label("tu"), bnf_or_seq(bnf_new_label("tu"), bnf_new_label("ut"), bnf_new_label(""), 0), 0), 0); */
+      bnf_visitor_register_rule(visitor, "NUMBER", bnf_new_label("42"));
+      node = bnf_and_seq(bnf_new_call("NUMBER"), bnf_new_label("tutu"), 0);
       bnf_visitor_register_rule(visitor, "S", node);
 
       bnf_print_node(node);

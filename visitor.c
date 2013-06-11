@@ -82,12 +82,17 @@ static int find_rule_by_name(list_node_t* node, void* p)
   return 0;
 }
 
+bnf_rule_t* bnf_visitor_find_rule(bnf_visitor_t* visitor, char* rule_name)
+{
+  return ((bnf_rule_t*) list_find_param(visitor->rules, find_rule_by_name, rule_name));
+}
+
 void bnf_visitor_launch(bnf_visitor_t* visitor, char* rule_name, char* text)
 {
   bnf_rule_t* rule;
   if (visitor)
     {
-      if ((rule = (bnf_rule_t*) list_find_param(visitor->rules, find_rule_by_name, rule_name)))
+      if ((rule = bnf_visitor_find_rule(visitor, rule_name)))
 	{
 	  bnf_visitor_visit(visitor, rule->root, text, 0);
 	  while (visitor->next_states)

@@ -10,8 +10,9 @@ static void bnf_call_print(bnf_node_t* node)
 static int bnf_call_visit(bnf_state_t* state, bnf_visitor_t* visitor)
 {
   bnf_call_t* call = (bnf_call_t*) state->state;
-  (void) visitor;
-  (void) call;
+  bnf_rule_t* rule = bnf_visitor_find_rule(visitor, call->rule);
+  if (rule)
+    bnf_visitor_visit(visitor, rule->root, state->text, state->mem);
   return 0;
 }
 
