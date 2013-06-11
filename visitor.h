@@ -21,6 +21,13 @@ struct bnf_rule_s
   bnf_node_t* root;
 };
 
+typedef struct bnf_rule_exit_s bnf_rule_exit_t;
+struct bnf_rule_exit_s
+{
+  list_node_t base;
+  bnf_node_t* caller;
+};
+
 typedef struct bnf_visitor_s bnf_visitor_t;
 struct bnf_visitor_s
 {

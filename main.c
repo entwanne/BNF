@@ -14,12 +14,14 @@ int main(int ac, char** argv)
   /* bnf_node_t* node = bnf_or_seq(bnf_new_star(bnf_new_label("toto")), bnf_new_label("tata"), bnf_new_label("tutu"), 0); */
   /* bnf_node_t* node = bnf_or_seq(bnf_new_label("tata"), bnf_new_label("tutu"), 0); */
   bnf_node_t* node;
+  bnf_node_t* node_num;
   bnf_visitor_t* visitor;
   if (ac > 1)
     {
       visitor = bnf_new_visitor();
       /* node = bnf_or_seq(bnf_new_call("NUMBER"), bnf_new_label("tata"), bnf_and_seq(bnf_new_label("tu"), bnf_or_seq(bnf_new_label("tu"), bnf_new_label("ut"), bnf_new_label(""), 0), 0), 0); */
-      bnf_visitor_register_rule(visitor, "NUMBER", bnf_new_label("42"));
+      node_num = bnf_new_label("42");
+      bnf_visitor_register_rule(visitor, "NUMBER", node_num);
       node = bnf_and_seq(bnf_new_call("NUMBER"), bnf_new_label("tutu"), 0);
       bnf_visitor_register_rule(visitor, "S", node);
 
@@ -28,6 +30,7 @@ int main(int ac, char** argv)
       bnf_visitor_launch(visitor, "S", argv[1]);
       
       bnf_free_node(node);
+      bnf_free_node(node_num);
     }
   else
     printf("Usage: %s string\n", argv[0]);

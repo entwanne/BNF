@@ -11,8 +11,13 @@ static int bnf_call_visit(bnf_state_t* state, bnf_visitor_t* visitor)
 {
   bnf_call_t* call = (bnf_call_t*) state->state;
   bnf_rule_t* rule = bnf_visitor_find_rule(visitor, call->rule);
+  bnf_rule_exit_t* rule_exit;
   if (rule)
-    bnf_visitor_visit(visitor, rule->root, state->text, state->mem);
+    {
+      rule_exit = (bnf_rule_exit_t*) list_new_node(sizeof(*rule_exit), state->mem);
+      rule_exit->caller = state->state;
+      bnf_visitor_visit(visitor, rule->root, state->text, (list_node_t*) rule_exit);
+    }
   return 0;
 }
 

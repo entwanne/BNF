@@ -62,15 +62,13 @@ static void test_visitor(list_node_t* node_, void* p)
   bnf_visitor_t* visitor = (bnf_visitor_t*) p;
   if (node && node->state && visitor)
     {
-      /* printf("ok: %d %s\n", node->mem, node->state->type->name); */
       printf("visiting: ");
       bnf_print_node(node->state);
       printf("\n");
       if (node->state->type->visit(node, visitor))
 	printf("match\n");
-      /* if (node->mem < 10) */
-      /* 	bnf_visitor_visit(visitor, node->state, node->mem + 1); */
     }
+  /* free(node); */
 }
 
 static int find_rule_by_name(list_node_t* node, void* p)
@@ -101,6 +99,7 @@ void bnf_visitor_launch(bnf_visitor_t* visitor, char* rule_name, char* text)
 	      visitor->states = visitor->next_states;
 	      visitor->next_states = 0;
 	      list_apply_param(visitor->states, test_visitor, visitor);
+	      /* visitor->states = 0; */
 	    }
 	}
       bnf_free_visitor(visitor);
