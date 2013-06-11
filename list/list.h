@@ -22,6 +22,7 @@ typedef list_node_t* list_t;
 
 typedef void (*list_apply_t)(list_node_t*);
 typedef void (*list_apply_param_t)(list_node_t*, void*);
+typedef int (*list_predicat_t)(list_node_t*);
 
 /**
  * \brief Instancie un nouveau maillon
@@ -79,5 +80,6 @@ void list_apply_param(list_t list, list_apply_param_t f, void* p);
  * \return taille de la liste
  */
 size_t list_size(list_t list);
+list_node_t* list_find(list_t list, list_predicat_t p);
 
 #endif

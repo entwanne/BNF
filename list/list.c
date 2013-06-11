@@ -89,3 +89,13 @@ size_t list_size(list_t list)
     ;
   return n;
 }
+
+list_node_t* list_find(list_t list, list_predicat_t p)
+{
+  list_node_t* node;
+  list_t slist = 0;
+  for (node = list; (node = list_get_next_node_r(node, &slist)); node = 0)
+    if (p(node))
+      return node;
+  return 0;
+}
