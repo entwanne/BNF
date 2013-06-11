@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "visitor.h"
 
 list_node_t* bnf_new_state(bnf_node_t* state, char* text, list_t mem)
@@ -13,22 +14,41 @@ list_node_t* bnf_new_state(bnf_node_t* state, char* text, list_t mem)
   return (list_node_t*) node;
 }
 
+list_node_t* bnf_new_rule(char* name, bnf_node_t* root)
+{
+  bnf_rule_t* node = (bnf_rule_t*) list_new_node(sizeof(*node), 0);
+  if (node)
+    {
+      node->name = name;
+      node->root = root;
+    }
+  return (list_node_t*) node;
+}
+
 
 bnf_visitor_t* bnf_new_visitor(void)
 {
   bnf_visitor_t* visitor = malloc(sizeof(*visitor));
   if (visitor)
     {
+      visitor->rules = 0;
       visitor->states = 0;
       visitor->next_states = 0;
     }
   return visitor;
 }
 
+void bnf_visitor_register_rule(bnf_visitor_t* visitor, char* name, bnf_node_t* root)
+{
+  if (visitor)
+    list_push(&visitor->rules, bnf_new_rule(name, root));
+}
+
 void bnf_free_visitor(bnf_visitor_t* visitor)
 {
   if (visitor)
     {
+      list_clear(&visitor->rules);
       list_clear(&visitor->states);
       list_clear(&visitor->next_states);
     }
@@ -36,7 +56,7 @@ void bnf_free_visitor(bnf_visitor_t* visitor)
 }
 
 #include <stdio.h>
-void test_visitor(list_node_t* node_, void* p)
+static void test_visitor(list_node_t* node_, void* p)
 {
   bnf_state_t* node = (bnf_state_t*) node_;
   bnf_visitor_t* visitor = (bnf_visitor_t*) p;
@@ -53,17 +73,30 @@ void test_visitor(list_node_t* node_, void* p)
     }
 }
 
-void bnf_visitor_launch(bnf_visitor_t* visitor, bnf_node_t* state, char* text)
+static int find_rule_by_name(list_node_t* node, void* p)
 {
+  bnf_rule_t* rule = (bnf_rule_t*) node;
+  char* name = (char*) p;
+  if (rule && name && !strcmp(rule->name, name))
+    return 1;
+  return 0;
+}
+
+void bnf_visitor_launch(bnf_visitor_t* visitor, char* rule_name, char* text)
+{
+  bnf_rule_t* rule;
   if (visitor)
     {
-      bnf_visitor_visit(visitor, state, text, 0);
-      while (visitor->next_states)
+      if ((rule = (bnf_rule_t*) list_find_param(visitor->rules, find_rule_by_name, rule_name)))
 	{
-	  list_clear(&visitor->states);
-	  visitor->states = visitor->next_states;
-	  visitor->next_states = 0;
-	  list_apply_param(visitor->states, test_visitor, visitor);
+	  bnf_visitor_visit(visitor, rule->root, text, 0);
+	  while (visitor->next_states)
+	    {
+	      list_clear(&visitor->states);
+	      visitor->states = visitor->next_states;
+	      visitor->next_states = 0;
+	      list_apply_param(visitor->states, test_visitor, visitor);
+	    }
 	}
       bnf_free_visitor(visitor);
     }

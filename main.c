@@ -1,12 +1,11 @@
 #include "bnf_label.h"
 #include "bnf_or.h"
 #include "bnf_and.h"
-#include "bnf_mul.h"
+/* #include "bnf_mul.h" */
+#include "bnf_call.h"
 #include "visitor.h"
 
 #include <stdio.h>
-
-/* Manque le node call pour appeler une règle */
 
 int main(int ac, char** argv)
 {
@@ -18,14 +17,17 @@ int main(int ac, char** argv)
   bnf_visitor_t* visitor;
   if (ac > 1)
     {
-      node = bnf_or_seq(bnf_new_label("tata"), bnf_and_seq(bnf_new_label("tu"), bnf_or_seq(bnf_new_label("tu"), bnf_new_label("ut"), bnf_new_label(""), 0), 0), 0);
       visitor = bnf_new_visitor();
+      node = bnf_or_seq(bnf_new_call("NUMBER"), bnf_new_label("tata"), bnf_and_seq(bnf_new_label("tu"), bnf_or_seq(bnf_new_label("tu"), bnf_new_label("ut"), bnf_new_label(""), 0), 0), 0);
+      bnf_visitor_register_rule(visitor, "S", node);
 
       bnf_print_node(node);
       printf("\n");
-      bnf_visitor_launch(visitor, node, argv[1]);
+      bnf_visitor_launch(visitor, "S", argv[1]);
       
       bnf_free_node(node);
     }
+  else
+    printf("Usage: %s string\n", argv[0]);
   return 0;
 }
