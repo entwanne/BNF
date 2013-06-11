@@ -90,12 +90,22 @@ size_t list_size(list_t list)
   return n;
 }
 
-list_node_t* list_find(list_t list, list_predicat_t p)
+list_node_t* list_find(list_t list, list_predicat_t f)
 {
   list_node_t* node;
   list_t slist = 0;
   for (node = list; (node = list_get_next_node_r(node, &slist)); node = 0)
-    if (p(node))
+    if (f(node))
+      return node;
+  return 0;
+}
+
+list_node_t* list_find_param(list_t list, list_predicat_param_t f, void* p)
+{
+  list_node_t* node;
+  list_t slist = 0;
+  for (node = list; (node = list_get_next_node_r(node, &slist)); node = 0)
+    if (f(node, p))
       return node;
   return 0;
 }
