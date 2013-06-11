@@ -12,7 +12,6 @@ static int bnf_label_visit(bnf_state_t* state, bnf_visitor_t* visitor)
 {
   bnf_label_t* label = (bnf_label_t*) state->state;
   bnf_node_t* next;
-  (void) visitor;
   /* printf("LABEL\n"); */
   if (!strncmp(label->label, state->text, label->len))
     {
